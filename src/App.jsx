@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import City from './components/City';
+import CityLite from './components/CityLite';
 import Tooltip from './components/Tooltip';
 import ControlPanel from './components/ControlPanel';
 import FlyingCameraUI from './components/FlyingCameraUI';
@@ -47,6 +48,9 @@ function App() {
     sortOrder: 'desc',
     highlightTop: false
   });
+  
+  // Performance mode
+  const [liteMode, setLiteMode] = useState(false);
   
   // Load CSV data and check for existing user
   useEffect(() => {
@@ -396,7 +400,7 @@ function App() {
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                 </svg>
-                Fly Mode
+                Fly
               </button>
               <button
                 onClick={() => setCameraMode('orbit')}
@@ -414,6 +418,28 @@ function App() {
             </div>
           </div>
           
+          {/* Performance Mode Toggle */}
+          <div className="fixed top-4 left-1/2 -translate-x-1/2 mt-12 z-40">
+            <button
+              onClick={() => setLiteMode(!liteMode)}
+              className={`glass rounded-full px-3 py-1.5 text-xs font-medium transition-all flex items-center gap-2 ${
+                liteMode 
+                  ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30' 
+                  : 'text-gray-400 hover:text-white'
+              }`}
+              title={liteMode ? 'CPU Mode: Faster, simpler graphics' : 'GPU Mode: Full effects'}
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {liteMode ? (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                ) : (
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                )}
+              </svg>
+              {liteMode ? '⚡ Lite Mode' : '✨ Full Mode'}
+            </button>
+          </div>
+          
           <button
             onClick={handleResetWelcome}
             className="fixed top-20 right-4 z-40 px-3 py-2 text-xs bg-white/10 hover:bg-white/20 text-gray-400 rounded-lg transition-all"
@@ -424,20 +450,37 @@ function App() {
       )}
       
       {/* 3D City */}
-      <City 
-        ref={cityRef}
-        onCanvasReady={handleCanvasReady}
-        buildings={filteredBuildings}
-        roads={cityData.roads}
-        parks={cityData.parks}
-        onBuildingHover={handleBuildingHover}
-        onBuildingClick={handleBuildingClick}
-        cameraMode={cameraMode}
-        onPointerLockChange={handlePointerLockChange}
-        isPaused={showWelcome}
-        currentUser={currentUser}
-        targetUser={targetUser}
-      />
+      {liteMode ? (
+        <CityLite 
+          ref={cityRef}
+          onCanvasReady={handleCanvasReady}
+          buildings={filteredBuildings}
+          roads={cityData.roads}
+          parks={cityData.parks}
+          onBuildingHover={handleBuildingHover}
+          onBuildingClick={handleBuildingClick}
+          cameraMode={cameraMode}
+          onPointerLockChange={handlePointerLockChange}
+          isPaused={showWelcome}
+          currentUser={currentUser}
+          targetUser={targetUser}
+        />
+      ) : (
+        <City 
+          ref={cityRef}
+          onCanvasReady={handleCanvasReady}
+          buildings={filteredBuildings}
+          roads={cityData.roads}
+          parks={cityData.parks}
+          onBuildingHover={handleBuildingHover}
+          onBuildingClick={handleBuildingClick}
+          cameraMode={cameraMode}
+          onPointerLockChange={handlePointerLockChange}
+          isPaused={showWelcome}
+          currentUser={currentUser}
+          targetUser={targetUser}
+        />
+      )}
       
       {/* Flying Camera UI */}
       {!showWelcome && (
