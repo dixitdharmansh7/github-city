@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { getGitHubUserData, isValidGitHubUsername } from '../utils/githubApi';
+import { getGitHubUserData, isValidGitHubUsername } from '../utils/githubapi.js';
 
 const WelcomeModal = ({ isOpen, onClose, onUserCreated }) => {
   const [username, setUsername] = useState('');
