@@ -90,4 +90,4 @@ MIT License - feel free to use and modify!
 
 ---
 
-Made with ❤️ by [Your Name](https://github.com/dixitdharmansh7)
+Made with ❤️ by [Dharmansh Dixit](https://github.com/dixitdharmansh7)
